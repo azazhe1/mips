@@ -1,0 +1,31 @@
+R :
+//ADD
+//SUB
+//MULT c'est spéciale1
+//DIV c'est spéciale1
+//AND
+//OR
+//XOR
+//ROTR c'est spéciale2
+//SLL
+//SRL c'est spéciale2
+//SLT
+//MFHI
+//MFLO
+//JR
+
+I :
+//ADDI
+//LW
+//SW
+//LUI
+//BEQ
+//BNE
+//BGTZ
+//BLEZ
+
+J :
+//J
+//JAL
+
+24
