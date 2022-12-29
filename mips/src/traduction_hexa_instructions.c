@@ -5,7 +5,7 @@
 #include "../include/header.h"
 #include "../include/convert_hexa.h"
 #include "../include/lecture_instructions.h"
-#include "../include/instructions.h"
+
 
 int commande_in(char * ligne, char *com){// Teste si nous somme à la bonne ligne ou si la commande est bien dans le fichier dico.txt
     char *commande = malloc(sizeof(char)*9);
@@ -141,7 +141,6 @@ void concat_R(char *mot,int tab[3], int *tab_file, char *opcode, char * fonction
     mot[6+5+5+5+5] = '\0';
     mot = strcat(mot,fonction);
     mot[32] = '\0';
-   
     free(sa);
     free(rd);
     free(rt);
@@ -209,7 +208,7 @@ void concat_J(char *mot,int add, char *opcode){//Créer les instructions de type
 void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
     FILE *fp = fopen("dico.txt", "r");
     FILE *sortie_assemblage;
-    if(mode == 2){
+    if((mode == 2) || (mode == 1)){
         sortie_assemblage = fopen( assemblage_sortie, "a" );
     }
     char *ligne = (char *)malloc(sizeof(char)*100);
@@ -262,7 +261,7 @@ void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
         get_op(ligne, opcode);// On récupère l'opcode de notre commande
         nb_op = get_param(ligne,tab_file);//On récupère le nombre d'argument que prend notre commande
         if(type(ligne) == 'R'){//teste si c'est un type R
-            lecture_operandeR(commande,tab);// On lis les argument qui nous son donné
+            lecture_operandeR(commande,tab,operateur);// On lis les argument qui nous son donné
             if(nb_op_good(nb_op,tab) == 1){// teste si on a bien le bon nombre d'argument 
                 strcpy(fonction, opcode);//Pour le type R on doit inverser la valeur présente dans le registre fonction avec celle du registre opcode
                 fonction[6] = '\0';
@@ -271,7 +270,7 @@ void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
                 concat_R(mot,tab,tab_file,opcode,fonction,operateur);
                 gotohexa(mot, mot_hexa);
                 
-                if(mode == 2){// SI c'est le mode automatique on doit mettre la sortis dans un fichier
+                if((mode == 2) || (mode == 1)){// SI c'est le mode automatique on doit mettre la sortis dans un fichier
                     fputs(mot_hexa,sortie_assemblage);
                     fputc('\n',sortie_assemblage);
                 }else{
@@ -286,23 +285,22 @@ void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
             if((tab[0]<0) || (tab[1]<0) || (tab[0]>31) || (tab[1]>31)){// Teste si les valeurs des registres donnés ne sont aps trop grand/petit
                 fatal("Insérer des registres entre 0 et 31");
             }
-            if((tab[2]>65535) || (tab[2]< -32768 || (tab[2] == -48))){// teste si la valeur imédiate n'est pas trop grande ou trop petite
-                fatal("Insérer une valeur imédiate entre -32768 et 65535");
+            if((tab[2]>32767) || (tab[2]< -32768 || (tab[2] == -48))){// teste si la valeur imédiate n'est pas trop grande ou trop petite
+                fatal("Insérer une valeur imédiate entre -32768 et 32767");
             }
             }else{
                 if((tab[0]<0) ||(tab[0]>31)){// Teste si les valeurs des registres donnés ne sont aps trop grand/petit
                 fatal("Insérer des registres entre 0 et 31");
             }
-                if((tab[1]>65535) || (tab[1]< -32768 || (tab[1] == -48))){// teste si la valeur imédiate n'est pas trop grande ou trop petite
-                fatal("Insérer une valeur imédiate entre -32768 et 65535");
+                if((tab[1]>32767) || (tab[1]< -32768 || (tab[1] == -48))){// teste si la valeur imédiate n'est pas trop grande ou trop petite
+                fatal("Insérer une valeur imédiate entre -32768 et 32767");
             }
             }
-            if(nb_op_good(nb_op,tab) == 1){// teste si on a bien le bon nombre d'argument 
+            if(nb_op_good(nb_op,tab) == 1){// teste si on a bien le bon nombre d'argument
                 concat_I(mot,tab,tab_file,opcode);
-                
                 gotohexa(mot, mot_hexa);
-                //application(tab, operateur, nb_op);
-                 if(mode == 2){// SI c'est le mode automatique on doit mettre la sortis dans un fichier
+                
+                if((mode == 2) || (mode == 1)){// SI c'est le mode automatique on doit mettre la sortis dans un fichier
                     fputs(mot_hexa,sortie_assemblage);
                     fputc('\n',sortie_assemblage);
                 }else{
@@ -317,7 +315,7 @@ void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
             if((tab[0]<67108864) || (tab[0]>=0)){// teste si on a bien le bon nombre d'argument 
                 concat_J(mot,tab[0],opcode);
                 gotohexa(mot, mot_hexa);
-                //application(tab, operateur, nb_op);
+                
                 if(mode == 2){// SI c'est le mode automatique on doit mettre la sortis dans un fichier
                     fputs(mot_hexa,sortie_assemblage);
                     fputc('\n',sortie_assemblage);
@@ -335,8 +333,6 @@ void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
     if(mode == 2){
         fclose(sortie_assemblage);
     }
-    
-
     free(prec_ligne);
     free(operateur);
     free(tab);

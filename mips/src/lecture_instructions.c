@@ -21,32 +21,129 @@ void lecture_operateur (char* instruction, char * operateur){
 
 /*On fait le choix de réaliser une fonction par type d'instruction pour la lecture des opérandes*/
 
+void specialeR(char* instruction, int* operande,char *operateur){//POUR SLL, SLR et ROTR c'est pas des registres mais des valeurs imédiates
+    int i =0;
+    if(!strcmp(operateur,"ROTR")){
+        i = 4;
+    }else{
+        i =3;
+    }
+    while(instruction[i]==' '){
+        i++;
+    }
+    if(instruction[i]!='$'){
+        fatal("Trop peut d'argument ou format incorrect: commande $a, $b, c");
+    }
+    i++;
 
+    if((instruction[i]<47) || (instruction[i]>58)){
+        fatal("Insérer des entiers comme valeur de registre");
+       
+    }else if(instruction[i+1]==','){
+        
+        operande[0] = instruction[i] -48;
+    }else if((instruction[i+1]<47) || (instruction[i+1]>58)){
+        fatal("Insérer des entiers comme valeur de registre"); 
+    }else{
+        operande[0] = (instruction[i] -48)*10 +(instruction[i+1] -48);
+        i++;
+    }
+    i++;
+
+    if(instruction[i]!=','){
+       
+        fatal("Trop peut d'argument ou format incorrect: commande $a, $b, c");
+    }
+    i++;
+    if(instruction[i]!=' '){
+       
+        fatal("Trop peut d'argument ou format incorrect: commande $a, $b, c");
+    }
+    i++;
+    if(instruction[i]!='$'){
+       
+        fatal("Trop peut d'argument ou format incorrect: commande $a, $b, c");
+    }
+    i++;
+
+    if((instruction[i]<47) || (instruction[i]>58)){
+        fatal("Insérer des entiers comme valeur de registre");   
+    }else if(instruction[i+1]==','){
+        operande[1] = instruction[i] -48;
+    }else if((instruction[i+1]<47) || (instruction[i+1]>58)){
+        fatal("Insérer des entiers comme valeur de registre"); 
+    }else{
+        operande[1] = (instruction[i] -48)*10 +(instruction[i+1] -48);
+        i++;
+    }
+    i++;
+
+    if(instruction[i]!=','){
+       
+        fatal("Trop peut d'argument ou format incorrect: commande $a, $b, c");
+    }
+    i++;
+    if(instruction[i]!=' '){
+
+        fatal("Trop peut d'argument ou format incorrect: commande $a, $b, c");
+    }
+    i++;
+    if((instruction[i]<47) || (instruction[i]>58)){
+        fatal("Insérer un entier comme valeur immédiate");   
+    }else if(instruction[i+1]=='\0'){
+        operande[2] = instruction[i] -48;
+    }else if((instruction[i+1]<47) || (instruction[i+1]>58)){
+        fatal("Trop peut d'argument ou format incorrect: commande $a, $b, c");
+    }else{
+        operande[2] = (instruction[i] -48)*10 +(instruction[i+1] -48);
+        i++;
+    }
+    i++;
+    if(instruction[i]!='\0'){
+        fatal("Trop peut d'argument ou format incorrect: commande $a, $b, c");
+    }
+    for(int i =0;i<3; i++){
+        if(operande[i]<0 || operande[i]>31){
+            fatal("Veuillez rentrer des valeurs entre 0 et 31");
+        }
+    }
+}
 /*Fonction qui récupère les registres (les opérandes) des instructions de type R*/
-void lecture_operandeR (char* instruction, int* operande){
+void lecture_operandeR (char* instruction, int* operande, char *opérateur){
 
     int i = 0;
     int c = 0;
-
-    while (instruction[i] != '\0'){
-        if ((instruction[i] == '$') && ((instruction[i+2] == ',') || (instruction[i+2] == '\0'))){ //si le registre est entre 0 et 9
-            operande[c] = instruction[i+1] -48;
-            if((operande[c]<0) || (operande[c]>31)){//Pour savoir si les registre donnés sont valide
-                fatal("Insérer des registres entre 0 et 31");
-            }
+    if(!strcmp(opérateur,"ROTR") || !strcmp(opérateur,"SLL") || !strcmp(opérateur,"SRL")){
+        specialeR(instruction,operande,opérateur);
+    }else{
+        while (instruction[i] != '\0'){
+            if ((instruction[i] == '$') && ((instruction[i+2] == ',') || (instruction[i+2] == '\0'))){ //si le registre est entre 0 et 9
+                operande[c] = instruction[i+1] -48;
+                if((instruction[i+1]<47) || (instruction[i+1]>58)){
+                    fatal("Insérer des entiers comme valeur de registre");   
+                }
             
-            c++;
-        }
-        else if((instruction[i] == '$') && ((instruction[i+3] == ',') || (instruction[i+3] == '\0'))){ //si le registre est superieur a 10 
-            operande[c] = (instruction[i+1] - 48)*10 + (instruction[i+2] - 48);
-            if((operande[c]<0) || (operande[c]>31)){//Pour savoir si les registre donnés sont valide
-                fatal("Insérer des registres entre 0 et 31");
+                if((operande[c]<0) || (operande[c]>31)){//Pour savoir si les registre donnés sont valide
+                    fatal("Insérer des registres entre 0 et 31");
+                }
+            
+                c++;
             }
-            c++;
-        }else if((instruction[i] == '$') && ((instruction[i+3] == ' ') || (instruction[i+3] == '\0'))){
-           fatal("Trop peut d'argument ou format incorrect: commande $a, $b, $c"); 
-        } 
-        i++;
+            else if((instruction[i] == '$') && ((instruction[i+3] == ',') || (instruction[i+3] == '\0'))){ //si le registre est superieur a 10 
+                operande[c] = (instruction[i+1] - 48)*10 + (instruction[i+2] - 48);
+                if((instruction[i+1]<47) || (instruction[i+1]>58) || (instruction[i+2]<47) || (instruction[i+2]>58)){
+                    fatal("Insérer des entiers comme valeur de registre");
+                }
+            
+                if((operande[c]<0) || (operande[c]>31)){//Pour savoir si les registre donnés sont valide
+                    fatal("Insérer des registres entre 0 et 31");
+                }
+                c++;
+            }else if((instruction[i] == '$') && ((instruction[i+3] == ' ') || (instruction[i+3] == '\0'))){
+                fatal("Trop peut d'argument ou format incorrect: commande $a, $b, $c"); 
+            } 
+            i++;
+        }
     }
 }
 
@@ -61,10 +158,17 @@ void lecture_operandeI (char* instruction, int* operande){
         /*Lecture des registres*/
         if ((instruction[i] == '$') && ((instruction[i+2] == ','))){ //si le registre est entre 0 et 9
             operande[c] = instruction[i+1] -48;
+            if((instruction[i+1]<47) || (instruction[i+1]>58)){
+                fatal("Insérer des entiers comme valeur de registre");   
+            }
+            
             c++;
         }
         else if((instruction[i] == '$') && (instruction[i+3] == ',')){ //si le registre est superieur a 10 
             operande[c] = (instruction[i+1] - 48)*10 + (instruction[i+2] - 48);
+            if((instruction[i+1]<47) || (instruction[i+1]>58) || (instruction[i+2]<47) || (instruction[i+2]>58)){
+                fatal("Insérer des entiers comme valeur de registre");
+            }
             c++;
         }
 
@@ -76,14 +180,23 @@ void lecture_operandeI (char* instruction, int* operande){
                 signe = -1;
                 operande[c] = -(instruction[i+1]-48);
                 i++;
+                if((instruction[i]<10) || (instruction[i]>58)){
+                    fatal("Insérer un entier comme valeur immédiate");
+                }
             }
             else{                       //si la valeur de l'offset est positive
                 signe = 1;
                 operande[c] = instruction[i]-48;
+                if((instruction[i]<47) || (instruction[i]>58)){
+                    fatal("Insérer un entier comme valeur immédiate");   
+                }
             }
             while ((instruction[i+1] != '\0') && (instruction[i+1] != '(')){ //tant qu'on est pas arrivé à la fin de l'instruction, on lit la valeur de l'offset que l'on transforme en décimal
                 i++;
                 operande[c] = operande[c]*10 + signe*(instruction[i]-48);
+                 if((instruction[i]<47) || (instruction[i]>58)){
+                    fatal("Insérer un entier comme valeur immédiate");   
+                }
             }
 
             if (instruction[i+1] == '('){
@@ -92,6 +205,9 @@ void lecture_operandeI (char* instruction, int* operande){
                 i = i+3;
                 while(instruction[i] != ')'){
                     operande[c] = operande[c]*10 + signe*(instruction[i]-48);
+                    if((instruction[i]<47) || (instruction[i]>58)){
+                        fatal("Insérer un entier comme valeur immédiate");   
+                    }           
                     i++;
                 }
             }

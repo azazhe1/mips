@@ -9,7 +9,8 @@
 #include "../include/convert_hexa.h"
 #include "../include/lecture_instructions.h"
 #include "../include/traduction_hexa_instructions.h"
-
+#include "../include/instructions.h"
+#include <unistd.h>
 
 int main(int argc, char **argv)
 {
@@ -20,18 +21,26 @@ int main(int argc, char **argv)
    char *commande = (char*)malloc(sizeof(char)*100);
    int leave = 0;
    char c;
-   int registre[32];
+   long int registre[34];
+   int init_registre[34];
    char *mot_hexa = (char*)malloc(sizeof(char)*9);
    char *mot_bit = (char*)malloc(sizeof(char)*33);
    char *cont = (char *)malloc(sizeof(char)*100);
+   Adresse *tete_tamp = NULL;
+   Adresse *tete = NULL;
+   Adresse *tete_index;
+   long address =0;
 
    mot_hexa[0] = '\0';
    commande[0] = '\0';
    cont[0] = '\0';
    registre[0] = 0;
-   for(int i=1;i<32;i++){
-        registre[i] = 67108864;
+   init_registre[0] = 1;
+   for(int i=1;i<34;i++){
+        registre[i] =2147483647;
+        init_registre[i] = 0;
    }
+
    
    /*on definit les valeurs de mode (0,1,2)*/
     /* S'il n'y a pas d'arguments (argc==1), lancer le mode interactif. */
@@ -83,7 +92,7 @@ int main(int argc, char **argv)
 
     /* Supprimez ces commentaires une fois que c'est fait. */
    if(mode ==0){
-      printf("Hello émulateur MIPS!, tapez EXIT pour quitter le mode intéractif\n");
+      printf("Hello émulateur MIPS!Les entiers sont signés, tapez EXIT pour quitter le mode intéractif\n");
       while(leave == 0){
          scanf("%[^\n]%*c", commande);//Lis la commande
          if(strcmp(commande, "\0")==0){//On test qu'on ai pas appuyé plusieur fois entrée
@@ -93,11 +102,11 @@ int main(int argc, char **argv)
          }else{
             fonctions(commande,mode,argv[2],mot_hexa);// appel la commande qui converti notre commande en hexa 
             convert_hexa_bit(mot_hexa,mot_bit);
-            application(mot_bit,registre);
+            //application(mot_bit,registre,init_registre,mode,file_hex);
          }
       }
    }else if(mode == 1 || mode ==2){
-      printf("Hello émulateur MIPS!\n");
+      printf("Hello émulateur MIPS!Les entiers sont signés.\n");
       prog_file = fopen( argv[1], "r" );
       while (fscanf(prog_file, "%[^\n]%*c", commande)!=EOF)// On lis notre fichier jusquà qu'i soit vide
       {
@@ -107,16 +116,41 @@ int main(int argc, char **argv)
             }            
          }
          if((commande[0] != '#')){// Teste si ce n'est pas uin commentire
-            fonctions(commande,mode,argv[2],mot_hexa);// Appelle de la fonction qui converti notr commande en hexa
-            convert_hexa_bit(mot_hexa,mot_bit);
-            application(mot_bit,registre);
             if(mode == 1){
+               fonctions(commande,mode,argv[2],mot_hexa);
+            }else{
+               fonctions(commande,mode,argv[2],mot_hexa);// Appelle de la fonction qui converti notr commande en hexa
+               
+            }
+            
+            if(mode == 1){
+               printf("%s\n",mot_hexa);
                printf("Appuyez sur une touche pour continuer et entrée pour continuer\n");
                scanf("%[^\n]%*c",cont);// On attend qu'une touche soit pressé
             }
+            insertionTete(&tete_tamp,mot_hexa,address);
+            address= address +4;
          }
-      }  
+      }
       fclose(prog_file);
+      renverse_(&tete, tete_tamp);
+   
+      tete_index = tete;
+      while (tete_index!=NULL){
+         convert_hexa_bit(tete_index->instruction,mot_bit);
+         application(mot_bit,registre,init_registre,mode,&tete_index,tete);
+         if(mode == 1){
+            printf("Appuyez sur une touche pour continuer et entrée pour continuer\n");
+            scanf("%[^\n]%*c",cont);// On attend qu'une touche soit pressé
+         }
+         
+      }
+      while(tete!=NULL){
+         suppressionTete(&tete);
+      }
+      while(tete_tamp!=NULL){
+         suppressionTete(&tete_tamp);
+      }
    }
    free(mot_bit);
    free(mot_hexa);

@@ -21,7 +21,6 @@ int binaryhexa(char mot[4]){//Converti la veleur binaire en décimal
   }
   return value;
 }
-
 char tohexa(int value){//converti la valeur décimal en hexadécimal
   char resultat;
   if(value == 10){
@@ -42,7 +41,6 @@ char tohexa(int value){//converti la valeur décimal en hexadécimal
   // on ne moddifie pas les valeurs qio sont comprise entre 0 et 9
   return resultat;
 }
-
 void gotohexa(char *code, char *mot){// converti 32 bit en hexadécimal
   int i = 0;
   int index = 0;
@@ -70,7 +68,6 @@ void gotohexa(char *code, char *mot){// converti 32 bit en hexadécimal
   free(value);
 
 }
-
 int byte(int value){//Calcule le nombre de bit nécessaire pour coder notre décimal en binaire
   int i= 0;
   int a = 1;
@@ -84,7 +81,6 @@ int byte(int value){//Calcule le nombre de bit nécessaire pour coder notre déc
   i--;
   return i;
 }
-
 void bit(int value, int size, char *tab){//Converti un décimal en binaire sur size bit
   int res = 0;
   int i = 0;
@@ -93,13 +89,13 @@ void bit(int value, int size, char *tab){//Converti un décimal en binaire sur s
   int index_prec = 0;
   int flag =1;
 
-  if(value>=0){
+  if(value>0){
     while(value != 0){
       index = byte(value);//Nous donne le nombre de bit nécessaire pour coder notre nombre
       index_of_1 = size - index - 1;
       res = (int)(pow(2, index));
       value = value - res;
-      for(index_prec; index_prec < index_of_1; index_prec ++){
+      for(index_prec = index_prec; index_prec < index_of_1; index_prec ++){
         tab[index_prec] = '0';
       }
       index_prec ++;
@@ -107,19 +103,19 @@ void bit(int value, int size, char *tab){//Converti un décimal en binaire sur s
     }
     if(index_of_1 != size){
       i = index_of_1 +1;
-      for(i; i<size; i++){
+      for(i=i; i<size; i++){
         tab[i] = '0';
       }
     }
     tab[size] = '\0';
-  }else{
+  }else if(value<0){
     value = 0 - value;
     while(value != 0){
       index = byte(value);//Nous donne le nombre de bit nécessaire pour coder notre nombre
       index_of_1 = size - index - 1;
       res = (int)(pow(2, index));
       value = value - res;
-      for(index_prec; index_prec < index_of_1; index_prec ++){
+      for(index_prec=index_prec; index_prec < index_of_1; index_prec ++){
         tab[index_prec] = '0';
       }
       index_prec ++;
@@ -127,13 +123,13 @@ void bit(int value, int size, char *tab){//Converti un décimal en binaire sur s
     }
     if(index_of_1 != size){
       i = index_of_1 +1;
-      for(i; i<size; i++){
+      for(i=i; i<size; i++){
         tab[i] = '0';
       }
     }
     tab[size] = '\0';
     i = 0;
-    for(i;i<size; i++){
+    for(i=i;i<size; i++){
       if(tab[i] == '0'){
         tab[i] ='1';
       }else{
@@ -141,7 +137,7 @@ void bit(int value, int size, char *tab){//Converti un décimal en binaire sur s
       }
     }
     i = size -1;
-    for(i;i>=0;i--){
+    for(i = i;i>=0;i--){
       if((flag == 1) && (tab[i] =='0')){
         tab[i] = '1';
         flag = 0;
@@ -153,9 +149,60 @@ void bit(int value, int size, char *tab){//Converti un décimal en binaire sur s
     }
     tab[size] = '\0';
     
+  }else{
+    for(int z = 0; z<size;z++){
+      tab[z] = '0';
+    }
+    tab[size]='\0';
   }
 }
-
+void longbit(long long value, char *tab){//Converti un décimal en binaire sur 64 bit
+  long long puis[63];
+  int flag = 1;
+  if(value>=0){
+    for(int i = 0; i<63; i++){
+      puis[i] = (long long)pow(2, i);
+    }
+    for(int i = 0; i<63;i++){
+      if(value == 0){
+        i = 64;
+      }else if(value >=puis[62-i]){
+        tab[i+1] = '1';
+        value = value - puis[62-i];
+      }
+    }
+  }else{
+    value = 0 - value;
+    for(int i = 0; i<63; i++){
+      puis[i] = (long long)pow(2, i);
+    }
+    for(int i = 0; i<63;i++){
+      if(value == 0){
+        i = 64;
+      }else if(value >=puis[62-i]){
+        tab[i+1] = '1';
+        value = value - puis[62-i];
+      }
+    }
+    for(int i = 0;i<64;i++){
+      if(tab[i] == '1'){
+        tab[i] ='0';
+      }else{
+        tab[i] = '1';
+      }
+    }
+    for(int i = 63;i>=0;i--){
+      if((flag == 1) && (tab[i] =='0')){
+        tab[i] = '1';
+        flag = 0;
+        i = -1;
+      }else{
+        tab[i] = '0';
+        flag = 1;
+      }
+    }
+  }
+}
 int hexa_decimal(char hex){//permet de passer de base 16 a base 10
   int resultat;
   if(hex == 'a'){
@@ -176,7 +223,6 @@ int hexa_decimal(char hex){//permet de passer de base 16 a base 10
   // on ne moddifie pas les valeurs qui sont comprise entre 0 et 9
   return resultat;
 }
-
 void convert_hexa_bit(char *mot_hexa, char * mot_bit){
   int mot = 0;
   for(int i =0;i<8;i++){
@@ -184,13 +230,39 @@ void convert_hexa_bit(char *mot_hexa, char * mot_bit){
   }
   bit(mot,32, mot_bit);
 }
-
-
-int bit_to_decimal(char *mot){
+long bit_to_decimal(char *mot,int signe,int error){
   int taille = strlen(mot);
-  int resultat = 0;
-  for(int i =0; i<taille;i++){
-    resultat = resultat + (mot[i]-'0')*pow(2,taille-1-i);
+  long resultat = 0;
+  int flag = 1;
+  if(signe == 0){
+    for(int i =0; i<taille;i++){
+      resultat = resultat + (long)(mot[i]-'0')*pow(2,taille-1-i);
+    }
+  }else{
+    for(int i=0;i<taille;i++){
+      if(mot[i] == '0'){
+        mot[i] = '1';
+      }else{
+        mot[i]='0';
+      }
+    }
+    if(error == 0){
+      for(int i=(taille-1); i>=0;i--){
+        if(flag==1){
+          if(mot[i] == '1'){
+            mot[i] = '0';
+          }else{
+            mot[i] = '1';
+            i = -1;
+          }
+        }
+      }
+    }
+    for(int i =0; i<taille;i++){
+      resultat = resultat + (long)(mot[i]-'0')*pow(2,taille-1-i);
+    }
+    resultat = 0 - resultat; 
   }
+ 
   return resultat;
 }
