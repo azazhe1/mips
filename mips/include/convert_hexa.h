@@ -10,3 +10,4 @@ int hexa_decimal(char hex);
 void convert_hexa_bit(char *mot_hexa, char * mot_bit);
 long bit_to_decimal(char *mot,int signe,int error);
 void longbit(long long value, char *tab);
+long hexa_number_decimal(char *mot_hexa);

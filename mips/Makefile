@@ -1,5 +1,5 @@
 # INDIQUEZ ICI: Votre nom et celui de votre binôme
-AUTEURS := BERNARD_CADIC
+AUTEURS := CASARRUBIOS_VINCENT
 INC_DIR := include
 MAIN := emul-mips
 SRC_C := $(wildcard src/*.c)

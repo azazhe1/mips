@@ -23,7 +23,7 @@ date: [18/10/22]
 * Comment avez-vous choisi de programmer l'analyse de texte (dont la lecture
 des opérandes entières) ?
 
-[Pour l'analyse de texte nous avons choisi de coder une fonction qui récupère le nom de l'opérateur et une fonction qui récupère les opérandes (les registres ou les valeurs d'offset selon le type de l'instruction). Nous avons réalisé une fonction de lecture d'opérande par type d'instruction. ]
+[Pour l'analyse de texte nous avons choisi de coder une fonction qui récupère le nom de l'opérateur et une fonction qui récupère les opérandes (les registres ou les valeurs d'offset selon le type de l'instruction). Nous avons réalisé une fonction de lecture d'opérande par type d'instruction. Au début nous récupérons le nom de l'instruction puis regardons le type de l'instruction (R, I ou J) afin d'appeler la bonne fonction.]
 
 * Avez-vous vu des motifs récurrents émerger ? Avez-vous "factorisé" ces motifs
 pour éviter de les répéter ? Si non, serait-ce difficile ?
@@ -33,7 +33,7 @@ pour éviter de les répéter ? Si non, serait-ce difficile ?
 * Comment avez-vous procédé pour écrire les tests ? Étes-vous confiant·e·s que
 toutes les instructions gérées sont couvertes ? 
 
-[Nous avons écrit les tests à la main de manière intelligente,nous avons testé toutes les commande sauf LR. Nous avons essayer de combler tous les cas possibles, pour le type R les registres sont compris entre 0 et 31 nous avons donc testé avec 0 et 31. Pour le type I la valeur immédiate est comprise entre -32768 et 65535, nous avons donc testé avec ces 2 valeurs. Pour le type J nous avons testé avec la valeur 0 (qui est le min) et la valeur 67108863( qui est le max)]
+[Nous avons écrit les tests à la main de manière intelligente, nous avons testé toutes les commande sauf LR. Nous avons essayé de combler tous les cas possibles, pour le type R les registres sont compris entre 0 et 31 nous avons donc testé avec 0 et 31. Pour le type I la valeur immédiate est comprise entre -32768 et 32757, nous avons donc testé avec ces 2 valeurs. Pour le type J nous avons testé avec la valeur 0 (qui est le min) et la valeur 67108863( qui est le max)]
 
 * Quelle a été votre expérience avec l'utilisation et la compréhension de la
 documentation (ie. des annexes) ?
@@ -54,15 +54,25 @@ documentation (ie. des annexes) ?
 
 * Quelle structure en modules planifiez-vous d'utiliser pour l'émulateur ?
 
-[COMPLÉTER ICI]
+[Pour l'émulateur, nous planifions d'utiliser 5 modules : 
+ - Le module "header" permet d'afficher l'ensemble des erreurs, comme le nombre d'arguments incorrects d'une fonction, la non création du fichier demandé...
+ - Le module "lecture_instructions" permet de lire l'instruction rentrée en paramètre et de récupérer le nom de l'instruction ainsi que les valeurs passées en paramètres (registres, valeurs immédiates, offset).
+ - Le module "convert_hexa" est utilisé pour réaliser des conversions en décimal vers binaire ainsi qu'en binaire vers héxadécimal.
+ - Le module "traduction_hexa_instructions" permet de traduire les instructions en hexadécimal.
+ - Le module "instructions" comportera l'ensemble des fonctions propres aux instructions.]
 
 * Quelles seront les fonctions principales de chaque module ?
 
-[COMPLÉTER ICI]
+[La fonction principale du module "header" est la fonction "fatal".
+Toutes les fonctions du module "lecture_instructions" sont des fonctions principales.
+La fonction principale du module "convert_hexa" est la fonction "gotohexa".
+La fonction principale du module "traduction_hexa_instructions" est la fonction "fonctions".
+La fonction principale du module "instructions" est la fonction "application".]
 
 * Quels avantages voyez vous à cette structure (à comparer à un unique fichier)?
 
-[COMPLÉTER ICI]
+[Nous avons donc ici un module par fonctionnalité principale du programme.
+C'est une option plus optimisée que d'avoir un unique fichier pour coder l'ensemble de notre programme. En effet, le code sera plus "facile" à relire et à débugger en cas de problème. Il sera surtout plus aéré et nous permettra de nous y retrouver plus facilement.]
 
 
 ## Rendu 4

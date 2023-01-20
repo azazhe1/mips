@@ -4,9 +4,9 @@
 #include "../include/header.h"
 #include <math.h>
 
-int binaryhexa(char mot[4]){//Converti la veleur binaire en décimal
+int binaryhexa(char mot[4]){//Convertit la valeur binaire en décimal
   int value = 0;
-  //On a un tableau de bit, pour chaque bit du tableau qui vaut 1 on fait 2^(4-son rang)
+  //On a un tableau de bits, pour chaque bit du tableau qui vaut 1 on fait 2^(4-son rang)
   if(mot[0] == '1'){
     value = value + 8;
   }
@@ -21,7 +21,7 @@ int binaryhexa(char mot[4]){//Converti la veleur binaire en décimal
   }
   return value;
 }
-char tohexa(int value){//converti la valeur décimal en hexadécimal
+char tohexa(int value){//convertit la valeur décimal en hexadécimal
   char resultat;
   if(value == 10){
     resultat = 'a';
@@ -38,10 +38,10 @@ char tohexa(int value){//converti la valeur décimal en hexadécimal
   }else{
     resultat = value + '0';
   }
-  // on ne moddifie pas les valeurs qio sont comprise entre 0 et 9
+  // on ne modifie pas les valeurs qui sont comprises entre 0 et 9
   return resultat;
 }
-void gotohexa(char *code, char *mot){// converti 32 bit en hexadécimal
+void gotohexa(char *code, char *mot){// convertit 32 bits en hexadécimal
   int i = 0;
   int index = 0;
   char *value = malloc(sizeof(char)*2);
@@ -56,7 +56,7 @@ void gotohexa(char *code, char *mot){// converti 32 bit en hexadécimal
     }
 
     mot1[i]=code[index];
-    value[0] = tohexa(binaryhexa(mot1));//converti le paquet de 4 bit en héxa
+    value[0] = tohexa(binaryhexa(mot1));//convertit le paquet de 4 bits en héxa
     value[1] = '\0';
     strcat(mot, value);
     index++;
@@ -68,7 +68,7 @@ void gotohexa(char *code, char *mot){// converti 32 bit en hexadécimal
   free(value);
 
 }
-int byte(int value){//Calcule le nombre de bit nécessaire pour coder notre décimal en binaire
+int byte(int value){//Calcule le nombre de bits nécessaires pour coder notre décimal en binaire
   int i= 0;
   int a = 1;
   while(a == 1){
@@ -81,7 +81,7 @@ int byte(int value){//Calcule le nombre de bit nécessaire pour coder notre déc
   i--;
   return i;
 }
-void bit(int value, int size, char *tab){//Converti un décimal en binaire sur size bit
+void bit(int value, int size, char *tab){//Convertit un décimal en binaire sur size bits
   int res = 0;
   int i = 0;
   int index = 0;
@@ -91,7 +91,7 @@ void bit(int value, int size, char *tab){//Converti un décimal en binaire sur s
 
   if(value>0){
     while(value != 0){
-      index = byte(value);//Nous donne le nombre de bit nécessaire pour coder notre nombre
+      index = byte(value);//Nous donne le nombre de bits nécessaires pour coder notre nombre
       index_of_1 = size - index - 1;
       res = (int)(pow(2, index));
       value = value - res;
@@ -111,7 +111,7 @@ void bit(int value, int size, char *tab){//Converti un décimal en binaire sur s
   }else if(value<0){
     value = 0 - value;
     while(value != 0){
-      index = byte(value);//Nous donne le nombre de bit nécessaire pour coder notre nombre
+      index = byte(value);//Nous donne le nombre de bits nécessaires pour coder notre nombre
       index_of_1 = size - index - 1;
       res = (int)(pow(2, index));
       value = value - res;
@@ -156,7 +156,7 @@ void bit(int value, int size, char *tab){//Converti un décimal en binaire sur s
     tab[size]='\0';
   }
 }
-void longbit(long long value, char *tab){//Converti un décimal en binaire sur 64 bit
+void longbit(long long value, char *tab){//Convertit un décimal en binaire sur 64 bits
   long long puis[63];
   int flag = 1;
   if(value>=0){
@@ -220,17 +220,24 @@ int hexa_decimal(char hex){//permet de passer de base 16 a base 10
   }else{
     resultat = hex - '0';
   }
-  // on ne moddifie pas les valeurs qui sont comprise entre 0 et 9
+  // on ne modifie pas les valeurs qui sont comprises entre 0 et 9
   return resultat;
 }
-void convert_hexa_bit(char *mot_hexa, char * mot_bit){
-  int mot = 0;
+long hexa_number_decimal(char *mot_hexa){//Convertit une valeur en hexa en décimal
+  long resultat =0;
+  for(int i=0;i<8;i++){
+    resultat = resultat + (long)hexa_decimal(mot_hexa[i])*pow(16,7-i);
+  }
+  return resultat;
+}
+void convert_hexa_bit(char *mot_hexa, char * mot_bit){//Passe de hexa a 32bit
+  long mot = 0;
   for(int i =0;i<8;i++){
     mot = hexa_decimal(mot_hexa[i])*pow(16,7-i) + mot;
   }
   bit(mot,32, mot_bit);
 }
-long bit_to_decimal(char *mot,int signe,int error){
+long bit_to_decimal(char *mot,int signe,int error){//pase de 32 bit a décimal
   int taille = strlen(mot);
   long resultat = 0;
   int flag = 1;

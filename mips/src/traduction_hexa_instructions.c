@@ -21,7 +21,7 @@ int commande_in(char * ligne, char *com){// Teste si nous somme à la bonne lign
         i = 0;
     }
     free(commande);
-    return i;// renvoi 1 si elle y est et 0 sinon
+    return i;// renvoie 1 si elle y est et 0 sinon
 }
 char type(char *ligne){// permet d'avoir le type de notre commande
     int i = 0;
@@ -46,7 +46,7 @@ void get_op(char *ligne, char *op){// permet d'obtenir l'opcode de notre command
     }
     op[6] = '\0';
 }
-int get_param(char *ligne,int *tab){//Pour connaitre les param de notre commande 
+int get_param(char *ligne,int *tab){//Pour connaitre les parametre de notre commande (rs, rd, imm, rt...)
     int i =0;
     int j = 0;
     while(ligne[i] != ':'){
@@ -66,7 +66,7 @@ int get_param(char *ligne,int *tab){//Pour connaitre les param de notre commande
         i++;
         
     }
-    return j;// retourne le nombre d'arguemnt que prend notre commande
+    return j;// retourne le nombre d'arguemnts que prend notre commande
 }
 int nb_op_good(int nb_op_fonc, int tab[3]){// Teste si nous avons bien le bon nombre de paramètre dans notre fonction
     int resultat = 0;
@@ -100,7 +100,7 @@ void concat_R(char *mot,int tab[3], int *tab_file, char *opcode, char * fonction
     int index_param = 0;// Pour savoir ou je le trouve dans tab
    
 
-    strcpy(rs, "00000");//On initialise nos rgistre avec la valeur 0
+    strcpy(rs, "00000");//On initialise nos registres avec la valeur 0
     rs[5] = '\0';
     strcpy(rt, "00000");
     rt[5] = '\0';
@@ -109,8 +109,8 @@ void concat_R(char *mot,int tab[3], int *tab_file, char *opcode, char * fonction
     strcpy(sa, "00000");
     sa[5] = '\0';
 
-    if(is_in(tab_file,3)){// Teste si on doit moddifier nos registre avec les valeurs donné en paramètre
-        bit(tab[index_param], 5, rd);//On convertit la valeur donné en paramètre qui correspond en binaire
+    if(is_in(tab_file,3)){// Teste si on doit modifier nos registres avec les valeurs données en paramètre
+        bit(tab[index_param], 5, rd);//On convertit la valeur donnée en paramètre qui correspond en binaire
         index_param++;
     }
     if(is_in(tab_file,1)){
@@ -125,11 +125,11 @@ void concat_R(char *mot,int tab[3], int *tab_file, char *opcode, char * fonction
         bit(tab[index_param], 5, sa);
         index_param++;
     }
-    if(!strcmp("ROTR",operateur)){// cas spéciale pour la commande ROTR
+    if(!strcmp("ROTR",operateur)){// cas spécial pour la commande ROTR
         strcpy(rs,"00001");
     }
 
-    mot = strcat(mot,opcode);// On concatène dans le bonne ordre nos registre avec l'opcode
+    mot = strcat(mot,opcode);// On concatène dans le bon ordre nos registres avec l'opcode
     mot[6] = '\0';
     mot = strcat(mot,rs);
     mot[6+5] = '\0';
@@ -154,14 +154,14 @@ void concat_I(char *mot,int tab[3], int *tab_file, char *opcode){//Créer les in
     int index_param = 0;// Pour savoir ou je le trouve dans tab
    
     
-    strcpy(rs, "00000");//On initialise nos rgistre avec la valeur 0
+    strcpy(rs, "00000");//On initialise nos registres avec la valeur 0
     rs[5] = '\0';
     strcpy(rt, "00000");
     rt[5] = '\0';
     strcpy(imm, "0000000000000000");
     imm[16] = '\0';
-    if(is_in(tab_file,2)){// Teste si on doit moddifier nos registre avec les valeurs donné en paramètre
-        bit(tab[index_param], 5, rt);//On convertit la valeur donné en paramètre qui correspond en binaire
+    if(is_in(tab_file,2)){// Teste si on doit modifier nos registres avec les valeurs données en paramètre
+        bit(tab[index_param], 5, rt);//On convertit la valeur donnée en paramètre qui correspond en binaire
         index_param++;
     }if(is_in(tab_file,1)){
         bit(tab[index_param], 5, rs);
@@ -170,7 +170,7 @@ void concat_I(char *mot,int tab[3], int *tab_file, char *opcode){//Créer les in
         bit(tab[index_param], 16, imm);
         index_param++;
     }
-    mot = strcat(mot,opcode);// On concatène dans le bonne ordre nos registre avec l'opcode
+    mot = strcat(mot,opcode);// On concatène dans le bon ordre nos registres avec l'opcode
     mot[6] = '\0';
     mot = strcat(mot,rs);
     mot[6+5] = '\0';
@@ -193,9 +193,9 @@ void concat_J(char *mot,int add, char *opcode){//Créer les instructions de type
         strcpy(adresse,"00000000000000000000000000");
         adresse[26] = '\0';
     }else{
-        bit(add, 26,adresse);//On convertit la valeur donné en paramètre qui correspond en binaire
+        bit(add, 26,adresse);//On convertit la valeur donnée en paramètre qui correspond en binaire
     }
-    mot = strcat(mot,opcode);// On concatène dans le bonne ordre nos registre avec l'opcode
+    mot = strcat(mot,opcode);// On concatène dans le bon ordre nos registres avec l'opcode
     mot[6] = '\0';
     mot = strcat(mot,adresse);
     mot[32] = '\0';
@@ -205,10 +205,10 @@ void concat_J(char *mot,int add, char *opcode){//Créer les instructions de type
 
 
 }
-void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
+void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){// C'est la fonction principale du fichier, elle va appeler les bonne commande a fin de convertir les instructions en hexa
     FILE *fp = fopen("dico.txt", "r");
     FILE *sortie_assemblage;
-    if((mode == 2) || (mode == 1)){
+    if(mode == 2){
         sortie_assemblage = fopen( assemblage_sortie, "a" );
     }
     char *ligne = (char *)malloc(sizeof(char)*100);
@@ -221,7 +221,7 @@ void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
     mot_hexa[0] = '\0';
 
     operateur[0] = '\0';
-    tab[0] = 65536;//Initialise notre tableau qui contient les paramètre de notre fonctions avec des valeurs qui ne sont pas possible d'ateindre pour le type I et R
+    tab[0] = 65536;//Initialise notre tableau qui contient les paramètres de notre fonction avec des valeurs qui ne sont pas possibles d'atteindre pour le type I et R
     tab[1] = 65536;
     tab[2] = 65536;
     
@@ -231,7 +231,7 @@ void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
     int exit = 0;
     int in = 1;
     int nb_op = 0;
-
+    int bne_beq=0;
     prec_ligne[0] = '\0';
     mot[0] = '\0';
     strcpy(fonction, "000000");// On initialise la valeur dans le registre à 0 (utile que pour le type R)
@@ -242,10 +242,10 @@ void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
     tab_file[2] = 0;
     tab_file[3] = 0;
    
-    lecture_operateur(commande,operateur);// On lis l'opérateur de notre commande
+    lecture_operateur(commande,operateur);// On lit l'opérateur de notre commande
 
     if(fp == NULL){
-        perror("Probleme ouverture fichier ");
+        fatal("Probleme ouverture fichier ");
     }
     while((exit !=1) && (in ==1)){// teste si notre opérateur se trouve bien dans notre fichier dico.txt
         fscanf(fp,"%s",ligne);
@@ -259,10 +259,10 @@ void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
     }
     if(in == 1){
         get_op(ligne, opcode);// On récupère l'opcode de notre commande
-        nb_op = get_param(ligne,tab_file);//On récupère le nombre d'argument que prend notre commande
+        nb_op = get_param(ligne,tab_file);//On récupère le nombre d'arguments que prend notre commande
         if(type(ligne) == 'R'){//teste si c'est un type R
-            lecture_operandeR(commande,tab,operateur);// On lis les argument qui nous son donné
-            if(nb_op_good(nb_op,tab) == 1){// teste si on a bien le bon nombre d'argument 
+            lecture_operandeR(commande,tab,operateur);// On lis les arguments qui nous sont donnés
+            if(nb_op_good(nb_op,tab) == 1){// teste si on a bien le bon nombre d'arguments
                 strcpy(fonction, opcode);//Pour le type R on doit inverser la valeur présente dans le registre fonction avec celle du registre opcode
                 fonction[6] = '\0';
                 strcpy(opcode, "000000");// Met 0 dans le registre Opcode
@@ -270,57 +270,56 @@ void fonctions(char *commande,int mode,char *assemblage_sortie, char *mot_hexa){
                 concat_R(mot,tab,tab_file,opcode,fonction,operateur);
                 gotohexa(mot, mot_hexa);
                 
-                if((mode == 2) || (mode == 1)){// SI c'est le mode automatique on doit mettre la sortis dans un fichier
+                if(mode == 2){// SI c'est le mode automatique on doit mettre la sortie dans un fichier
                     fputs(mot_hexa,sortie_assemblage);
                     fputc('\n',sortie_assemblage);
-                }else{
-                    printf("%s\n", mot_hexa);
                 }
             }else{
                 fatal("Trop peut d'argument ou format incorrect: commande $a, $b, $c\n");//Erreur s'il n'y a pas assez d'argument
             }
         }else if(type(ligne) == 'I'){//teste si c'est un type I
-            lecture_operandeI(commande,tab);//On lis les argument qui nous son donné
+            lecture_operandeI(commande,tab);//On lis les arguments qui nous sont donnés
             if(tab[2] != 65536){
-            if((tab[0]<0) || (tab[1]<0) || (tab[0]>31) || (tab[1]>31)){// Teste si les valeurs des registres donnés ne sont aps trop grand/petit
-                fatal("Insérer des registres entre 0 et 31");
+            if((tab[0]<0) || (tab[1]<0) || (tab[0]>31) || (tab[1]>31)){// Teste si les valeurs des registres donnés ne sont aps trop grandes/petites
+                fatal("Insérez des registres entre 0 et 31");
             }
-            if((tab[2]>32767) || (tab[2]< -32768 || (tab[2] == -48))){// teste si la valeur imédiate n'est pas trop grande ou trop petite
-                fatal("Insérer une valeur imédiate entre -32768 et 32767");
+            if((tab[2]>32767) || (tab[2]< -32768 || (tab[2] == -48))){// teste si la valeur immédiate n'est pas trop grande ou trop petite
+                fatal("Insérez une valeur imédiate entre -32768 et 32767");
             }
             }else{
-                if((tab[0]<0) ||(tab[0]>31)){// Teste si les valeurs des registres donnés ne sont aps trop grand/petit
-                fatal("Insérer des registres entre 0 et 31");
+                if((tab[0]<0) ||(tab[0]>31)){// Teste si les valeurs des registres donnés ne sont pas trop grandes/petites
+                fatal("Insérez des registres entre 0 et 31");
             }
-                if((tab[1]>32767) || (tab[1]< -32768 || (tab[1] == -48))){// teste si la valeur imédiate n'est pas trop grande ou trop petite
-                fatal("Insérer une valeur imédiate entre -32768 et 32767");
+                if((tab[1]>32767) || (tab[1]< -32768 || (tab[1] == -48))){// teste si la valeur immédiate n'est pas trop grande ou trop petite
+                fatal("Insérez une valeur imédiate entre -32768 et 32767");
             }
             }
-            if(nb_op_good(nb_op,tab) == 1){// teste si on a bien le bon nombre d'argument
+            if(nb_op_good(nb_op,tab) == 1){// teste si on a bien le bon nombre d'arguments
+                if(!strcmp("BEQ",operateur)||!strcmp("BNE",operateur)){
+                    bne_beq=tab[1];
+                    tab[1]=tab[0];
+                    tab[0]=bne_beq;
+                }
                 concat_I(mot,tab,tab_file,opcode);
                 gotohexa(mot, mot_hexa);
                 
-                if((mode == 2) || (mode == 1)){// SI c'est le mode automatique on doit mettre la sortis dans un fichier
+                if(mode == 2){// SI c'est le mode automatique on doit mettre la sortie dans un fichier
                     fputs(mot_hexa,sortie_assemblage);
                     fputc('\n',sortie_assemblage);
-                }else{
-                    printf("%s\n", mot_hexa);
                 }
             }else{
                 fatal("Trop peut d'argument ou format incorrect: commande $a, $b, c\n");//Erreur s'il n'y a pas assez d'argument
             }
         }else{
-            tab[0] = 67108864;// Comme l'imédiat du type I est  sur 26bit on doit moddifier la valeur par défaut
-            lecture_operandeJ(commande,tab);//On lis les argument qui nous son donné
-            if((tab[0]<67108864) || (tab[0]>=0)){// teste si on a bien le bon nombre d'argument 
+            tab[0] = 67108864;// Comme l'immédiat du type I est  sur 26 bits on doit modifier la valeur par défaut
+            lecture_operandeJ(commande,tab);//On lit les arguments qui nous sont donnés
+            if((tab[0]<67108864) || (tab[0]>=0)){// teste si on a bien le bon nombre d'arguments
                 concat_J(mot,tab[0],opcode);
                 gotohexa(mot, mot_hexa);
                 
-                if(mode == 2){// SI c'est le mode automatique on doit mettre la sortis dans un fichier
+                if(mode == 2){// SI c'est le mode automatique on doit mettre la sortie dans un fichier
                     fputs(mot_hexa,sortie_assemblage);
                     fputc('\n',sortie_assemblage);
-                }else{
-                    printf("%s\n", mot_hexa);
                 }
             }else{
                 fatal("Trop peut d'argument ou format incorrect: commande a\n");//Erreur s'il n'y a pas assez d'argument
