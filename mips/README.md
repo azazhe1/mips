@@ -81,40 +81,40 @@ C'est une option plus optimisée que d'avoir un unique fichier pour coder l'ense
 modifications ont été nécessaires ? Rétrospectivement, est-ce que cette
 structure était bien prévue ?
 
-[COMPLÉTER ICI]
+[Nous n'avons pas exactement suivis la structure du rendu3, nous avons séparé la mémoire de l'exécution des fonctions, il n'y a que le fichier mémoire.c qui fait des opérations sur la mémoire, les autres fichier appellent seulement les fonctions dans ce fichier]
 
 * Avez-vous compris le fonctionnement de chaque instruction à partir de la
 documentation fournie ? Si non, quels sont les points obscurs ?
 
-[COMPLÉTER ICI]
+[Nous n'avons pas tout compris grâce a la doc. C'est surtout quoi faire en cas d'erreur qui est compliqué a comprendre( quoi faire quand il y a un overflow, division par 0)]
 
 * Quels exemples de programmes avez-vous choisi pour tester le calcul ? Les
 comparaisons et sauts ? La mémoire ?
 
-[COMPLÉTER ICI]
+[Pour tester les calcul nous avons créée un fichier qui font seulement des somme/soustraction (ADDI.s et ADD_SUB.s), des opérations bit à bit (XOR_OR_AND.s, SLL_SRL_ROTR.s). Pour les comparaison et les saut nous avons le fichier jump.obs.s, JUMP.s et test_all_inst.s. Pour la mémoire nous avons le fichier SW_LW.s qui simule un tableau et des opération sur ce même tableau].
 
 * Le sujet spécifie-t-il tous les détails nécessaires pour bien implémenter la
 mémoire ? Quels choix avec-vous faits ?
 
-[COMPLÉTER ICI]
+[Le sujet nous indique tout ce qu'il faut, l'écart entre les adresse (+4) et l'adresse max.Nous avons choisi de faire une liste chainée pour la mémoire et un tableau de 35 int pour les registres]
 
 * Reste-t-il des bugs que vous avez découverts et pas corrigés ?
 
-[COMPLÉTER ICI]
+[Nous avons beug majeur, si il y a plus d'un espace entre les instructions (dans notre fichier.s) la dernière instruction lut va être "compilé et exécuté" n fois (avec n= nb de lignes entre notre instruction et la "prochaine instruction/fin du fichier/#" -1)]
 
 * D'autres remarques sur votre programme ?
 
 [COMPLÉTER ICI]
 
 * Cochez (en remplaçant `[ ]` par `[x]`) si vous avez :**
-  - [ ] Implémenté l'émulation de toutes les instructions gérées par le rendu 2.
+  - [x] Implémenté l'émulation de toutes les instructions gérées par le rendu 2.
   - [ ] Implémenté l'émulation de toutes les instructions.
-  - [ ] Tous vos tests qui passent.
-  - [ ] Vérifié que vous tests couvrent toutes les instructions émulées.
-  - [ ] Testé les cas particuliers : valeurs négatives, overflows...
-  - [ ] Testé les cas d'erreur : division par zéro, sauts invalides...
+  - [x] Tous vos tests qui passent.
+  - [x] Vérifié que vous tests couvrent toutes les instructions émulées.
+  - [x] Testé les cas particuliers : valeurs négatives, overflows...
+  - [x] Testé les cas d'erreur : division par zéro, sauts invalides...
   - [ ] Un port fonctionnel de DOOM pour votre émulateur.
 
 * Des retours sur le projet en général ?
 
-[COMPLÉTER ICI]
+[Nous avons bien aimé le projet et apris pas mal de chose]
